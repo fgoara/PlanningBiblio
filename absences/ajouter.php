@@ -167,9 +167,11 @@ if($confirm){
     $debut_sql=$db->escapeString($debut_sql);
     $fin_sql=$db->escapeString($fin_sql);
     $perso_id=$db->escapeString($perso_id);
+	//correction UPEM : ajout du 2ieme OR dans l'update ci-dessous pour gerer le cas ou l absence est incluse dans la plage de poste de manière complète (et non seulement à cheval sur les bornes)  	    
     $req="UPDATE `{$dbprefix}pl_poste` SET `absent`='1' WHERE
       ((CONCAT(`date`,' ',`debut`) < '$fin_sql' AND CONCAT(`date`,' ',`debut`) >= '$debut_sql')
-      OR (CONCAT(`date`,' ',`fin`) > '$debut_sql' AND CONCAT(`date`,' ',`fin`) <= '$fin_sql'))
+      OR (CONCAT(`date`,' ',`fin`) > '$debut_sql' AND CONCAT(`date`,' ',`fin`) <= '$fin_sql')
+      OR (CONCAT(`date`,' ',`debut`) <= '$debut_sql' AND CONCAT(`date`,' ',`fin`) >= '$fin_sql'))      
       AND `perso_id`='$perso_id'";
     $db->query($req);
   }
@@ -282,7 +284,7 @@ else{					//	Formulaire
   echo "<tr id='hre_fin' style='display:none;'><td>\n";
   echo "<label class='intitule'>Heure de fin </label>\n";
   echo "</td><td>\n";
-  echo "<select name='hre_fin' class='center ui-widget-content ui-corner-all'>\n";
+  echo "<select name='hre_fin' class='center ui-widget-content ui-corner-all onfocus='setEndHour();'>\n";
   selectHeure(7,23,true,$quartDHeure);
   echo "</select>\n";
   echo "</td></tr>\n";
